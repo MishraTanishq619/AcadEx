@@ -1,5 +1,6 @@
 'use server';
 
+import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
@@ -61,5 +62,25 @@ export async function loginUser(formData: unknown) {
     return { success: true, message: 'Login successful', authToken: token };
   } catch (error) {
     return { success: false, message: error instanceof Error ? error.message : 'Login failed' };
+  }
+}
+
+
+
+export async function getUserDetails() {
+  try {
+    const userId = await auth();
+    if (!userId) return { success: false, message: 'Unauthorized' };
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, email: true, role: true },
+    });
+
+    if (!user) return { success: false, message: 'User not found' };
+
+    return { success: true, user };
+  } catch {
+    return { success: false, message: 'Error fetching user details' };
   }
 }

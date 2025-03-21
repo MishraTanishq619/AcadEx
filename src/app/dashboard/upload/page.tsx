@@ -47,8 +47,8 @@ const UploadPage = () => {
       const categoryRes = await getAllCategories();
       const tagRes = await getAllTags();
 
-      if (categoryRes.success) setCategories(categoryRes.categories);
-      if (tagRes.success) setTags(tagRes.tags);
+      if (categoryRes.success) setCategories(categoryRes.categories || []);
+      if (tagRes.success) setTags(tagRes.tags || []);
     };
 
     fetchData();
@@ -141,9 +141,9 @@ const UploadPage = () => {
 							}))}
 							value={field.value
 								?.map((id) => tags.find((tag) => tag.id === id))
-								.map((tag) => ({
-									value: tag.id,
-									label: tag.name,
+								?.map((tag) => ({
+									value: tag?.id,
+									label: tag?.name,
 								}))}
 							onChange={(selected) =>
 								field.onChange(

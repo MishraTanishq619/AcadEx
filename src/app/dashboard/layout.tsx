@@ -23,7 +23,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <aside className={`bg-gray-900 text-white w-64 p-4 fixed h-full transition-transform ${isOpen ? 'translate-x-0' : '-translate-x-64'}`}> 
+      <aside className={`bg-gray-900 text-white w-64 p-4 z-30 fixed h-full transition-transform ${isOpen ? 'translate-x-0' : '-translate-x-64'}`}> 
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold">AcadEx</h2>
           <button onClick={toggleSidebar} className="">
@@ -31,13 +31,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           </button>
         </div>
         <nav className="mt-6 space-y-4">
-          <Link href="/dashboard">
+          <Link href="/dashboard" onClick={()=>setIsOpen(false)}>
             <span className="block p-2 rounded hover:bg-gray-700">Dashboard</span>
           </Link>
-          <Link href="/dashboard/resources">
+          <Link href="/dashboard/resources" onClick={()=>setIsOpen(false)}>
             <span className="block p-2 rounded hover:bg-gray-700">Resources</span>
           </Link>
-          <Link href="/dashboard/upload">
+          <Link href="/dashboard/upload" onClick={()=>setIsOpen(false)}>
             <span className="block p-2 rounded hover:bg-gray-700">Upload</span>
           </Link>
         </nav>

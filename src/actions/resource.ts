@@ -21,7 +21,7 @@ export const createResource = async (data: z.infer<typeof resourceSchema>) => {
     const userId = await auth();
     if (!userId) return { success: false, message: 'Unauthorized' };
 
-    // Create resource in the database
+
     const newResource = await prisma.resource.create({
       data: {
         title: validatedData.title,
@@ -30,7 +30,9 @@ export const createResource = async (data: z.infer<typeof resourceSchema>) => {
         categoryId: validatedData.categoryId,
         userId: userId,
         tags: {
-          create: validatedData.tags.map((tag) => ({ name: tag })),
+          connect: validatedData.tags.map((tagId) => ({
+            id: tagId,
+          })),
         },
       },
     });
@@ -41,3 +43,55 @@ export const createResource = async (data: z.infer<typeof resourceSchema>) => {
     return { success: false, message: error.message || 'Something went wrong' };
   }
 };
+
+export async function getAllResources() {
+  try {
+    const resources = await prisma.resource.findMany({
+      include: {
+        category: true,
+        tags: true,
+      },
+    });
+
+    return {
+      success: true,
+      resources: resources.map((resource) => ({
+        id: resource.id,
+        title: resource.title,
+        description: resource.description,
+        category: resource.category.name,
+        tags: resource.tags.map((tag) => tag.name),
+        fileUrl: resource.fileUrl,
+      })),
+    };
+  } catch {
+    return { success: false, message: 'Error fetching resources' };
+  }
+}
+
+
+export async function getUserResources() {
+  try {
+    const userId = await auth();
+    if (!userId) return { success: false, message: 'Unauthorized' };
+
+    const resources = await prisma.resource.findMany({
+      where: { userId: userId },
+      include: { category: true, tags: true },
+    });
+
+    return {
+      success: true,
+      resources: resources.map((resource) => ({
+        id: resource.id,
+        title: resource.title,
+        description: resource.description,
+        category: resource.category.name,
+        tags: resource.tags.map((tag) => tag.name),
+        fileUrl: resource.fileUrl,
+      })),
+    };
+  }catch {
+    return { success: false, message: 'Error fetching user resources' };
+  }
+}
