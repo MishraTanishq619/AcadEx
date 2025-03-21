@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useFetch from '@/hooks/use-fetch';
-import { loginUser } from '@/actions/user-actions';
+import { loginUser } from '@/actions/user';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import Cookies  from 'js-cookie';
